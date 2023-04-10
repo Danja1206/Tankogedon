@@ -34,6 +34,8 @@ protected:
 
 	void FireSpecial();
 
+	void ChangeCannon();
+
 	FVector MousePos;
 
 	

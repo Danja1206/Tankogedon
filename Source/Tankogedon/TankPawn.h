@@ -28,7 +28,11 @@ public:
 
 	void FireSpecial();
 
+	void AddAmmo(int count);
+
 	void SetupCannon(TSubclassOf<ACannon> newCannonClass);
+
+	void ChangeCannon();
 
 protected:
 
@@ -54,6 +58,12 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cannon")
 		TSubclassOf<ACannon> CannonClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cannon")
+		TSubclassOf<ACannon> SecondCannonClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cannon")
+		TSubclassOf<ACannon> TempCannonClass;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cannon")
 		class UArrowComponent* CannonSetupPoint;

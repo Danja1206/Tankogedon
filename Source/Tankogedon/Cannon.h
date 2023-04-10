@@ -23,6 +23,8 @@ public:
 	bool isReadyToFire();
 	void Reload();
 	void FireSpecialLogic();
+	void ChangeCannon();
+	void AddAmmo(int count);
 
 protected:
 	// Called when the game starts or when spawned
@@ -36,6 +38,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fire params")
 		ECannonType CannonType = ECannonType::FireProjectile;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fire params")
+		TSubclassOf<class AProjectile> ProjectileClass;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fire params")
 		float FireRate = 1.0f;

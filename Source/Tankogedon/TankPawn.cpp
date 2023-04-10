@@ -110,6 +110,14 @@ void ATankPawn::FireSpecial()
 	}
 }
 
+void ATankPawn::AddAmmo(int count)
+{
+	if (Cannon)
+	{
+		Cannon->AddAmmo(count);
+	}
+}
+
 void ATankPawn::SetupCannon(TSubclassOf<ACannon> newCannonClass)
 {
 	if (!newCannonClass)
@@ -126,6 +134,17 @@ void ATankPawn::SetupCannon(TSubclassOf<ACannon> newCannonClass)
 	spawnParams.Owner = this;
 	Cannon = GetWorld()->SpawnActor<ACannon>(newCannonClass, spawnParams);
 	Cannon->AttachToComponent(CannonSetupPoint, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
+	TempCannonClass = newCannonClass;
+}
+
+void ATankPawn::ChangeCannon()
+{
+	if (CannonClass && SecondCannonClass)
+	{
+		CannonClass = SecondCannonClass;
+		SecondCannonClass = TempCannonClass;
+		SetupCannon(CannonClass);
+	}
 }
 
 void ATankPawn::BeginPlay()
