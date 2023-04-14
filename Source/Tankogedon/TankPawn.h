@@ -3,13 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Pawn.h"
+#include "Entities.h"
+#include "DamageTaker.h"
 #include "TankPawn.generated.h"
 
 class UStaticMeshComponent;
 class ACannon;
 UCLASS()
-class TANKOGEDON_API ATankPawn : public APawn
+class TANKOGEDON_API ATankPawn : public AEntities
 {
 	GENERATED_BODY()
 
@@ -24,49 +25,17 @@ public:
 
 	void moveMethod(float DeltaTime);
 
-	void Fire();
-
-	void FireSpecial();
-
 	void AddAmmo(int count);
-
-	void SetupCannon(TSubclassOf<ACannon> newCannonClass);
-
-	void ChangeCannon();
 
 protected:
 
 	virtual void BeginPlay() override;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
-		UStaticMeshComponent* BodyMesh;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
-		UStaticMeshComponent* TurretMesh;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
-		class UBoxComponent* BoxCollision;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
 		class USpringArmComponent* SpringArm;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
 		class UCameraComponent* Camera;
-
-	UPROPERTY()
-		ACannon* Cannon;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cannon")
-		TSubclassOf<ACannon> CannonClass;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cannon")
-		TSubclassOf<ACannon> SecondCannonClass;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cannon")
-		TSubclassOf<ACannon> TempCannonClass;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cannon")
-		class UArrowComponent* CannonSetupPoint;
 
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")

@@ -15,6 +15,19 @@ enum class ECannonType : uint8
 	FireSpecial = 1 UMETA(DisplayName = "Use special")
 };
 
+USTRUCT()
+struct FDamageData
+{
+	GENERATED_BODY()
+
+	float DamageValue;
+
+	AActor* Instigator;
+
+	AActor* DamageMaker;
+
+};
+
 /**
  * 
  */

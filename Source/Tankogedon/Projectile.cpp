@@ -6,6 +6,7 @@
 #include "TimerManager.h"
 #include "Components/StaticMeshComponent.h"
 #include "Cannon.h"
+#include "DamageTaker.h"
 
 // Sets default values
 AProjectile::AProjectile()
@@ -37,11 +38,32 @@ void AProjectile::Move()
 
 void AProjectile::OnMeshOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (OtherActor)
+	AActor* owner = GetOwner();
+	AActor* OwnerByOwner = owner != nullptr ? owner->GetOwner() : nullptr;
+
+	if (OtherActor != owner || OtherActor != OwnerByOwner)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Overlapped actor: %s"), *OtherActor->GetName());
-		OtherActor->Destroy();
-		Destroy();
+
+		if (OtherActor)
+		{
+			IDamageTaker* DamageActor = Cast<IDamageTaker>(OtherActor);
+			if (DamageActor)
+			{
+				FDamageData damageData;
+				damageData.DamageValue = Damage;
+				damageData.Instigator = owner;
+				damageData.DamageMaker = this;
+
+				DamageActor->TakeDamage(damageData);
+
+			}
+			else
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Overlapped actor: %s"), *OtherActor->GetName());
+				OtherActor->Destroy();
+			}
+			Destroy();
+		}
 	}
 
 }

@@ -11,6 +11,7 @@
 #include "TimerManager.h"
 #include "Projectile.h"
 #include "DrawDebugHelpers.h"
+#include "DamageTaker.h"
 
 // Sets default values
 ACannon::ACannon()
@@ -61,9 +62,20 @@ void ACannon::Fire()
 			DrawDebugLine(GetWorld(), Start, hitResult.Location, FColor::Red,false,1.0f,0,5);
 			if (hitResult.GetActor())
 			{
-				AActor* OverlappedActor = hitResult.GetActor();
-				UE_LOG(LogTemp, Warning, TEXT("Actor: %s"), *OverlappedActor->GetName());
-				OverlappedActor->Destroy();
+				IDamageTaker* DamageActor = Cast<IDamageTaker>(hitResult.GetActor());
+				if (DamageActor)
+				{
+					FDamageData damageData;
+					damageData.DamageValue = Damage;
+					damageData.Instigator = GetOwner();
+					damageData.DamageMaker = this;
+
+					DamageActor->TakeDamage(damageData);
+				}
+				else
+				{
+					hitResult.GetActor()->Destroy();
+				}
 
 			}
 		}

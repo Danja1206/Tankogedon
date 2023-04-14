@@ -8,6 +8,7 @@
 #include "Camera/CameraComponent.h"
 #include "TankPlayerController.h"
 #include "Cannon.h"
+#include "HealthComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Components/ArrowComponent.h"
 
@@ -18,15 +19,6 @@ ATankPawn::ATankPawn()
 	PrimaryActorTick.bCanEverTick = true;
 
 
-	BoxCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("RootComponent"));
-	RootComponent = BoxCollision;
-
-	BodyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BodyMesh"));
-	BodyMesh->SetupAttachment(BoxCollision);
-
-	TurretMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("TurretComponent"));
-	TurretMesh->SetupAttachment(BodyMesh);
-
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
 	SpringArm->SetupAttachment(BoxCollision);
 	SpringArm->bDoCollisionTest = false;
@@ -36,9 +28,6 @@ ATankPawn::ATankPawn()
 
 	Camera = CreateDefaultSubobject< UCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(SpringArm);
-
-	CannonSetupPoint = CreateDefaultSubobject<UArrowComponent>(TEXT("CannonSetupPoint"));
-	CannonSetupPoint->SetupAttachment(TurretMesh);
 
 }
 
@@ -93,23 +82,6 @@ void ATankPawn::moveMethod(float DeltaTime)
 	SetActorLocation(movePosition, true);
 }
 
-void ATankPawn::Fire()
-{
-	if (Cannon)
-	{
-		Cannon->Fire();
-	}
-
-}
-
-void ATankPawn::FireSpecial()
-{
-	if (Cannon)
-	{
-		Cannon->FireSpecial();
-	}
-}
-
 void ATankPawn::AddAmmo(int count)
 {
 	if (Cannon)
@@ -118,41 +90,12 @@ void ATankPawn::AddAmmo(int count)
 	}
 }
 
-void ATankPawn::SetupCannon(TSubclassOf<ACannon> newCannonClass)
-{
-	if (!newCannonClass)
-	{
-		return;
-	}
-	if (Cannon)
-	{
-		Cannon->Destroy();
-	}
-
-	FActorSpawnParameters spawnParams;
-	spawnParams.Instigator = this;
-	spawnParams.Owner = this;
-	Cannon = GetWorld()->SpawnActor<ACannon>(newCannonClass, spawnParams);
-	Cannon->AttachToComponent(CannonSetupPoint, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
-	TempCannonClass = newCannonClass;
-}
-
-void ATankPawn::ChangeCannon()
-{
-	if (CannonClass && SecondCannonClass)
-	{
-		CannonClass = SecondCannonClass;
-		SecondCannonClass = TempCannonClass;
-		SetupCannon(CannonClass);
-	}
-}
 
 void ATankPawn::BeginPlay()
 {
 
 	Super::BeginPlay();
 	TankController = Cast<ATankPlayerController>(GetController());
-	SetupCannon(CannonClass);
 
 }
 
