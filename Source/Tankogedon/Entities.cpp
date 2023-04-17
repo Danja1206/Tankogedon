@@ -20,10 +20,10 @@ AEntities::AEntities()
 	BodyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BodyMesh"));
 	BodyMesh->SetupAttachment(BoxCollision);
 
-	//TurretMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("TurretComponent"));
+	//TurretMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("TurretMesh"));
 	//TurretMesh->SetupAttachment(BodyMesh);
 
-	TurretMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("TurretMesh"));
+	TurretMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("TurretComponent"));
 	TurretMesh->SetupAttachment(BodyMesh);
 
 	CannonSetupPoint = CreateDefaultSubobject<UArrowComponent>(TEXT("CannonSetupPoint"));
@@ -47,6 +47,17 @@ void AEntities::Fire()
 	if (Cannon)
 	{
 		Cannon->Fire();
+	}
+}
+
+void AEntities::FireAI()
+{
+	if (Cannon)
+	{
+		if (!Cannon->FireAI())
+		{
+			ChangeCannon();
+		}
 	}
 }
 

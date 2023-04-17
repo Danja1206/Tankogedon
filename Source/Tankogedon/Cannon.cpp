@@ -12,6 +12,10 @@
 #include "Projectile.h"
 #include "DrawDebugHelpers.h"
 #include "DamageTaker.h"
+#include "Components/AudioComponent.h"
+#include "Particles/ParticleSystemComponent.h"
+#include "Camera/CameraShakeBase.h"
+#include "Entities.h"
 
 // Sets default values
 ACannon::ACannon()
@@ -24,10 +28,18 @@ ACannon::ACannon()
 
 	CannonMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("CannonMesh"));
 	CannonMesh->SetupAttachment(SceneComp);
+	CannonMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 	ProjectileSpawnPoint = CreateDefaultSubobject<UArrowComponent>(TEXT("ArrowComponent"));
-	ProjectileSpawnPoint->SetupAttachment(SceneComp);
+	ProjectileSpawnPoint->SetupAttachment(CannonMesh);
 
+	ShotEffect = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("ShotEffect"));
+	ShotEffect->SetupAttachment(ProjectileSpawnPoint);
+	ShotEffect->SetAutoActivate(false);
+
+	AudioEffect = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponent"));
+	AudioEffect->SetupAttachment(SceneComp);
+	AudioEffect->SetAutoActivate(false);
 }
 
 void ACannon::Fire()
@@ -85,9 +97,51 @@ void ACannon::Fire()
 		}
 
 	}
+
+	if (ShotEffect)
+	{
+		ShotEffect->ActivateSystem();
+	}
+
+	if (AudioEffect)
+	{
+		AudioEffect->Play();
+	}
+
+	if (CameraShake)
+	{
+		GetWorld()->GetFirstPlayerController()->ClientPlayCameraShake(CameraShake);
+	}
+
+
 	bReadyToFire = false;
 	ammoCount--;
 	GetWorld()->GetTimerManager().SetTimer(ReloadTime, this, &ACannon::Reload, FireRate, false);
+}
+
+bool ACannon::FireAI()
+{
+	if (!(isReadyToFire() && ammoCount > 0))
+	{
+		
+		return false;
+	}
+	GetWorld()->GetTimerManager().SetTimer(FireSpecialTime, this, &ACannon::FireAILogic, 1 / fireAITime, true);
+	bReadyToFire = false;
+	ammoCount--;
+	GetWorld()->GetTimerManager().SetTimer(ReloadTime, this, &ACannon::Reload, FireRate, false);
+	return true;
+
+}
+
+void ACannon::FireAILogic()
+{
+	bFireAI++;
+	if (5 == bFireAI)
+	{
+		GetWorld()->GetTimerManager().ClearTimer(FireAITime);
+		GetWorld()->GetTimerManager().SetTimer(ReloadTime, this, &ACannon::Reload, FireRate, false);
+	}
 }
 
 void ACannon::FireSpecial()

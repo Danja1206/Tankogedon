@@ -19,6 +19,8 @@ public:
 	ACannon();
 
 	void Fire();
+	bool FireAI();
+	void FireAILogic();
 	void FireSpecial();
 	bool isReadyToFire();
 	void Reload();
@@ -60,10 +62,24 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fire params")
 		int sprayCount = 4;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects")
+		class UParticleSystemComponent* ShotEffect;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects")
+		class UAudioComponent* AudioEffect;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects")
+		TSubclassOf<class UCameraShakeBase> CameraShake;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fire params")
+		int fireAITime = 5;
+
 	int bFireSpecial = 0;
+	int bFireAI = 0;
 	bool bReadyToFire = true;
 	FTimerHandle ReloadTime;
 	FTimerHandle FireSpecialTime;
+	FTimerHandle FireAITime;
 
 public:	
 	// Called every frame

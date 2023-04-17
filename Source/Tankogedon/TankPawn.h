@@ -27,15 +27,44 @@ public:
 
 	void AddAmmo(int count);
 
+	TArray<FVector> GetPatrollingPath() const { return PatrollingPath; };
+	float GetMovementAccurency() const { return MovementAccurency; };
+
+	FVector GetTurretForwardVector() const;
+
+	void RotateTurretTo(FVector TargetPosition);
+
+	FVector GetEyesPosition() const;
+
+
+
+
+
+
 protected:
 
 	virtual void BeginPlay() override;
+
+	//TurretMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("TurretComponent"));
+	//TurretMesh->SetupAttachment(BodyMesh);
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI", Meta = (MakeEditWidget = true))
+		TArray<FVector> PatrollingPath;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")
+		float MovementAccurency = 50;
+
+
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
+		class UStaticMeshComponent* TurretMeshComp;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
 		class USpringArmComponent* SpringArm;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
 		class UCameraComponent* Camera;
+
 
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")

@@ -19,6 +19,7 @@ public:
 	// Sets default values for this pawn's properties
 	AEntities();
 	void Fire();
+	void FireAI();
 
 	void FireSpecial();
 

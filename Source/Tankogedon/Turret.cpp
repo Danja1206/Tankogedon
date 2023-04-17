@@ -48,6 +48,12 @@ void ATurret::Destroyed()
 
 void ATurret::Targeting()
 {
+
+	if (!isPlayerSeen())
+	{
+		return;
+	}
+
 	if (!PlayerPawn)
 		return;
 
@@ -57,7 +63,7 @@ void ATurret::Targeting()
 
 		if (CanFire())
 		{
-			Fire();
+			FireAI();
 		}
 	}
 
@@ -81,9 +87,33 @@ bool ATurret::IsPlayerInRange()
 
 bool ATurret::CanFire()
 {
+	if (!isPlayerSeen())
+		return false;
 	FVector targetDir = TurretMesh->GetForwardVector();
 	FVector DirToPlayer = PlayerPawn->GetActorLocation() - GetActorLocation();
 	DirToPlayer.Normalize();
 	float aimAngle = FMath::RadiansToDegrees(acosf(FVector::DotProduct(targetDir, DirToPlayer)));
 	return aimAngle <= Accurency;
+}
+
+bool ATurret::isPlayerSeen()
+{
+	FVector playerPos = PlayerPawn->GetActorLocation();
+	FVector eyesPos = CannonSetupPoint->GetComponentLocation();
+	FCollisionQueryParams params = FCollisionQueryParams();
+	params.AddIgnoredActor(this);
+
+	FHitResult hitResult;
+
+	if (GetWorld()->LineTraceSingleByChannel(hitResult, eyesPos, playerPos, ECollisionChannel::ECC_Visibility, params))
+	{
+		if (hitResult.GetActor())
+		{
+			DrawDebugLine(GetWorld(), eyesPos, hitResult.Location, FColor::Purple, false, 0.5f, 0, 5);
+			return hitResult.GetActor() == PlayerPawn;
+
+		}
+	}
+	DrawDebugLine(GetWorld(), eyesPos, hitResult.Location, FColor::Red, false, 0.5f, 0, 5);
+	return false;
 }
