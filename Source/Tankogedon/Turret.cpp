@@ -63,7 +63,7 @@ void ATurret::Targeting()
 
 		if (CanFire())
 		{
-			FireAI();
+			Fire();
 		}
 	}
 

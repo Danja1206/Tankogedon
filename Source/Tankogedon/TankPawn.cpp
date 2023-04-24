@@ -37,7 +37,7 @@ void ATankPawn::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	//move
-	moveMethod(DeltaTime);
+	Move(DeltaTime);
 
 	//rotation
 	targetRotateAxisValue = FMath::Lerp(targetRotateAxisValue, axisRotateRight,DeltaTime);
@@ -68,7 +68,7 @@ void ATankPawn::RotationRight(float Value)
 	axisRotateRight = Value;
 }
 
-void ATankPawn::moveMethod(float DeltaTime)
+void ATankPawn::Move(float DeltaTime)
 {
 	FVector CurrentPosition = GetActorLocation();
 	FVector ForwardVector = GetActorForwardVector();

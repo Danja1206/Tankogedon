@@ -120,7 +120,7 @@ bool ATankAIController::CanFire()
 
 void ATankAIController::Fire()
 {
-	TankPawn->FireAI();
+	TankPawn->Fire();
 }
 
 bool ATankAIController::isPlayerSeen()

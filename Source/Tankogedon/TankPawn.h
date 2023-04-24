@@ -23,7 +23,7 @@ public:
 
 	void RotationRight(float Value);
 
-	void moveMethod(float DeltaTime);
+	void Move(float DeltaTime);
 
 	void AddAmmo(int count);
 

@@ -14,7 +14,7 @@ class TANKOGEDON_API AProjectile : public AActor
 public:	
 	// Sets default values for this actor's properties
 	AProjectile();
-	void Start();
+	virtual void Start();
 
 protected:
 	// Called when the game starts or when spawned
@@ -31,10 +31,20 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
 		float Damage = 1.0f;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
+		float PushForce = 1000.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
+		float ExplodeRadius = 5;
+
 	FTimerHandle MovementTimer;
 
 	UFUNCTION()
-		void Move();
+		virtual void Move();
+
+	void Explode();
+	void HitResultCheck(bool sweepResult, TArray<FHitResult>& AttackHit);
+
 	UFUNCTION()
 		void OnMeshOverlapBegin(class UPrimitiveComponent* OverlappedComp, 
 			class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, 
